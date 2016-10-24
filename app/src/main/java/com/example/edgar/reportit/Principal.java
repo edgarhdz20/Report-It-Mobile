@@ -79,8 +79,13 @@ public class Principal extends AppCompatActivity {
                         "http://192.168.0.50:3000/reports/post_report"); // server
 
                 MultiPartEntity reqEntity = new MultiPartEntity();
-                reqEntity.addPart("avatar",
-                        System.currentTimeMillis() + ".png", in);
+                reqEntity.addPart("user_id","2");
+                reqEntity.addPart("report_type_id","2");
+                reqEntity.addPart("description","problema");
+                reqEntity.addPart("pos_x","28");
+                reqEntity.addPart("pos_y","-106");
+                reqEntity.addPart("address","calle tal");
+                reqEntity.addPart("avatar", System.currentTimeMillis() + ".jpg", in);
                 httppost.setEntity(reqEntity);
 
                 Log.i("TAG", "request " + httppost.getRequestLine());
@@ -89,9 +94,11 @@ public class Principal extends AppCompatActivity {
                     response = httpclient.execute(httppost);
                 } catch (ClientProtocolException e) {
                     // TODO Auto-generated catch block
+                    Toast.makeText(Principal.this, "Error de protocolo", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
+                    Toast.makeText(Principal.this, "Error de IO", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
                 try {
@@ -129,7 +136,7 @@ public class Principal extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            Toast.makeText(Principal.this, "UPLOADED", Toast.LENGTH_LONG).show();
+            Toast.makeText(Principal.this, "Reporte enviado", Toast.LENGTH_LONG).show();
         }
     }
 }
