@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Report It!</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_location_select">Map</string>
 </resources>
