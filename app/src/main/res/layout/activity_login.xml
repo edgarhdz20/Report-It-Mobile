@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.edgar.reportit.Login">
+    tools:context="com.example.edgar.reportit.Login"
+    android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -17,18 +18,56 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="Iniciar sesion" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_login" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+    <TextView
+        android:text="Usuario"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:id="@+id/textView2"
+        android:padding="10dp"
+        android:textSize="18sp" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/edtUsername" />
+
+    <TextView
+        android:text="Contraseña"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:textSize="18sp"
+        android:padding="10dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/edtPassword"
+        android:inputType="textPassword" />
+
+    <Button
+        android:text="Iniciar Sesion"
+        android:layout_width="match_parent"
+        style="@style/buttonStyle"
+        android:background="@drawable/button_black"
+        android:textColor="@color/colorButton"
+        android:layout_marginTop="30dp"
+        android:id="@+id/btnLogin" />
+
+    <Button
+        android:text="Crear Cuenta"
+        android:layout_width="match_parent"
+        android:id="@+id/btnSignup"
+        android:background="@drawable/button_black"
+        android:textColor="@color/colorButton"
+        style="@style/buttonStyle" />
+
+</LinearLayout>

@@ -13,92 +13,99 @@
     android:weightSum="1">
 
 
-    <HorizontalScrollView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" >
+            android:layout_height="wrap_content">
 
-            <RadioGroup
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-                <RadioButton
-                    android:text="Bache"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rdbBache"
-                    android:layout_weight="1" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" >
 
-                <RadioButton
-                    android:text="Fuga de agua"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/rdbFugaAgua"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="10dp" />
-            </RadioGroup>
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:text="Bache"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rdbBache"
+                            android:layout_weight="1"
+                            android:checked="true" />
+
+                        <RadioButton
+                            android:text="Fuga de agua"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rdbFugaAgua"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="10dp" />
+                    </RadioGroup>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <Button
+                android:text="Tomar Foto"
+                android:layout_width="match_parent"
+                android:background="@drawable/button_black"
+                android:id="@+id/btnFoto"
+                android:textColor="@color/colorButton"
+                style="@style/buttonStyle"
+                android:layout_height="40dp" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="118dp"
+                android:id="@+id/imgvFoto" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView"
+                android:text="Descripcion" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/edtDescription" />
+
+            <TextView
+                android:text="Sin ubicacion seleccionada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtvAddress" />
+
+            <Button
+                android:text="Seleccionar ubicacion"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/btnAddress"
+                android:background="@drawable/button_black"
+                android:textColor="@color/colorButton"
+                style="@style/buttonStyle" />
+
+            <Button
+                android:text="Enviar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/btnSend"
+                android:textColor="@color/colorButton"
+                android:background="@drawable/button_black"
+                style="@style/buttonStyle" />
         </LinearLayout>
-    </HorizontalScrollView>
+    </ScrollView>
 
-    <Button
-        android:text="Tomar Foto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/button_black"
-        android:id="@+id/btnFoto"
-        android:textColor="@color/colorButton"
-        style="@style/buttonStyle" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:id="@+id/imgvFoto" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:text="Descripcion" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/edtDescription" />
-
-    <TextView
-        android:text="Direccion:"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2" />
-
-    <TextView
-        android:text="Sin ubicacion seleccionada"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtvAddress" />
-
-    <Button
-        android:text="Seleccionar ubicacion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnAddress"
-        android:background="@drawable/button_black"
-        android:textColor="@color/colorButton"
-        style="@style/buttonStyle" />
-
-    <Button
-        android:text="Enviar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnSend"
-        android:textColor="@color/colorButton"
-        android:background="@drawable/button_black"
-        style="@style/buttonStyle" />
 </LinearLayout>

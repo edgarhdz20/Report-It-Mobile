@@ -1,8 +1,25 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.edgar.reportit.LocationSelect" />
+    android:layout_width="match_parent"
+    tools:context="com.example.edgar.reportit.LocationSelect">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+         />
+
+    <Button
+        android:text="Aceptar"
+        android:layout_width="match_parent"
+        android:id="@+id/btnSaveLocation"
+        android:layout_weight="1"
+        style="@style/buttonStyle"
+        android:background="@drawable/button_black"
+        android:textColor="@color/colorButton"
+        android:layout_gravity="bottom" />
+</FrameLayout>
