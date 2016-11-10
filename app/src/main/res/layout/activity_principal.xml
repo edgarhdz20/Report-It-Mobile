@@ -10,7 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="com.example.edgar.reportit.Principal"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="@drawable/bg10">
 
 
     <ScrollView
@@ -24,7 +25,9 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -37,20 +40,46 @@
                         android:orientation="horizontal">
 
                         <RadioButton
-                            android:text="Bache"
+                            android:text=" Bache"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/radio_button"
+                            android:button="@android:color/transparent"
+                            android:drawableLeft="@drawable/bache_icon"
                             android:id="@+id/rdbBache"
                             android:layout_weight="1"
-                            android:checked="true" />
+                            android:checked="true"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:padding="5dp" />
 
                         <RadioButton
-                            android:text="Fuga de agua"
+                            android:text="Fuga"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/radio_button"
+                            android:button="@android:color/transparent"
+                            android:drawableLeft="@drawable/fuga_icon"
                             android:id="@+id/rdbFugaAgua"
                             android:layout_weight="1"
-                            android:layout_marginLeft="10dp" />
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:padding="5dp"
+                            android:gravity="center_vertical|fill_horizontal|start" />
+
+                        <RadioButton
+                            android:text="Cableado"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/radio_button"
+                            android:button="@android:color/transparent"
+                            android:drawableLeft="@drawable/cableado_icon"
+                            android:id="@+id/rdbCableado"
+                            android:layout_weight="1"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp"
+                            android:padding="5dp"
+                            android:gravity="center_vertical|fill_horizontal|start" />
                     </RadioGroup>
                 </LinearLayout>
             </HorizontalScrollView>
@@ -61,6 +90,7 @@
                 android:background="@drawable/button_black"
                 android:id="@+id/btnFoto"
                 android:textColor="@color/colorButton"
+                android:drawableLeft="@drawable/camera_icon"
                 style="@style/buttonStyle"
                 android:layout_height="40dp" />
 
@@ -73,7 +103,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView"
-                android:text="Descripcion" />
+                android:text="Descripcion"
+                android:padding="10dp" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -86,10 +117,12 @@
                 android:text="Sin ubicacion seleccionada"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtvAddress" />
+                android:id="@+id/txtvAddress"
+                android:padding="10dp" />
 
             <Button
                 android:text="Seleccionar ubicacion"
+                android:drawableLeft="@drawable/gps_icon"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:id="@+id/btnAddress"

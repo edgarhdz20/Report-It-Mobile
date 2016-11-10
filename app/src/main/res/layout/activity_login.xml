@@ -6,22 +6,44 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.example.edgar.reportit.Login"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/bg1">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Iniciar sesion" />
+        <TextView
+            android:text="Report "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
+            android:textSize="36sp"
+            android:textStyle="normal|bold|italic"
+            android:textAlignment="textEnd"
+            android:layout_weight="1"
+            android:layout_marginBottom="15dp"
+            android:background="@android:drawable/screen_background_dark_transparent"
+            android:textColor="@android:color/white"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
 
-    </android.support.design.widget.AppBarLayout>
+        <TextView
+            android:text="It!"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView6"
+            android:layout_weight="1"
+            android:textSize="36sp"
+            android:textStyle="normal|bold|italic"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="15dp"
+            android:background="@android:drawable/screen_background_dark_transparent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
+    </LinearLayout>
 
     <TextView
         android:text="Usuario"
