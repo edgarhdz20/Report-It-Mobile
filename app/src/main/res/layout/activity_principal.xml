@@ -11,8 +11,7 @@
     android:orientation="vertical"
     tools:context="com.example.edgar.reportit.Principal"
     android:weightSum="1"
-    android:background="@drawable/bg10">
-
+    android:background="@drawable/bg11">
 
     <ScrollView
         android:layout_width="match_parent"

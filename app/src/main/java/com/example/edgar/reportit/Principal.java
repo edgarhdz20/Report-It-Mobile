@@ -8,7 +8,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +49,7 @@ public class Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+
         btnFoto = (Button)findViewById(R.id.btnFoto);
         btnSend = (Button)findViewById(R.id.btnSend);
         btnMap = (Button)findViewById(R.id.btnAddress);
@@ -146,8 +149,10 @@ public class Principal extends AppCompatActivity {
             });
             if(rdbFuga.isChecked()){
                 type = "1";
-            }else{
+            }else if(rdbBache.isChecked()){
                 type = "2";
+            }else{
+                type= "3";
             }
         }
 
@@ -260,5 +265,12 @@ public class Principal extends AppCompatActivity {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 }

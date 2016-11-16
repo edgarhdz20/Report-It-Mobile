@@ -2,19 +2,14 @@ package com.example.edgar.reportit;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -29,38 +24,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class Login extends AppCompatActivity {
+public class Register extends AppCompatActivity {
 
-    EditText edtUser, edtPassword;
-    Button btnLogin, btnSignup;
-    SQLiteDatabase sqldb;
+    EditText edtUsername, edtPassword, edtEmail;
+    Button btnSign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        edtUser = (EditText)findViewById(R.id.edtUsername);
-        edtPassword = (EditText)findViewById(R.id.edtPassword);
-        btnLogin = (Button)findViewById(R.id.btnLogin);
-        btnSignup = (Button)findViewById(R.id.btnSignup);
+        setContentView(R.layout.activity_register);
+        edtUsername = (EditText)findViewById(R.id.edtUserSign);
+        edtPassword = (EditText)findViewById(R.id.edtPassSign);
+        edtEmail = (EditText)findViewById(R.id.edtEmailSign);
+        btnSign = (Button)findViewById(R.id.btnSign);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HttpAsyncTask loginRequest = new HttpAsyncTask();
                 if(validate()){
-                    loginRequest.execute("https://salty-earth-57909.herokuapp.com/users/sign_in");
+                    loginRequest.execute("https://salty-earth-57909.herokuapp.com/users");
                 }
-            }
-        });
-
-        btnSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intento = new Intent(Login.this, Register.class);
-                startActivity(intento);
             }
         });
     }
@@ -80,8 +64,10 @@ public class Login extends AppCompatActivity {
 
             // 3. build jsonObject
             JSONObject jsonObject1 = new JSONObject();
-            jsonObject1.accumulate("username", edtUser.getText().toString());
+            jsonObject1.accumulate("username", edtUsername.getText().toString());
+            jsonObject1.accumulate("email", edtEmail.getText().toString());
             jsonObject1.accumulate("password", edtPassword.getText().toString());
+            jsonObject1.accumulate("role_id", "4");
             System.out.println("JSON: " + jsonObject1.toString());
             JSONObject jsonObject = new JSONObject();
             jsonObject.accumulate("user", jsonObject1);
@@ -130,8 +116,7 @@ public class Login extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            btnLogin.setEnabled(false);
-            btnSignup.setEnabled(false);
+            btnSign.setEnabled(false);
         }
 
         @Override
@@ -143,18 +128,17 @@ public class Login extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            btnLogin.setEnabled(true);
-            btnSignup.setEnabled(true);
+            btnSign.setEnabled(true);
             try {
                 JSONObject jsonObj = new JSONObject(response);
                 if(jsonObj.get("login").equals("OK")){
-                    Intent intento = new Intent(Login.this, Principal.class);
+                    Intent intento = new Intent(Register.this, Principal.class);
                     intento.putExtra("USER_ID",jsonObj.getString("user"));
                     finish();
                     startActivity(intento);
                 }else{
                     AlertDialog.Builder builder;
-                    builder = new AlertDialog.Builder(Login.this);
+                    builder = new AlertDialog.Builder(Register.this);
                     builder.setCancelable(true);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
@@ -173,7 +157,7 @@ public class Login extends AppCompatActivity {
     }
 
     private boolean validate(){
-        if(edtUser.getText().toString().trim().equals(""))
+        if(edtUsername.getText().toString().trim().equals(""))
             return false;
         else if(edtPassword.getText().toString().trim().equals(""))
             return false;
@@ -181,7 +165,7 @@ public class Login extends AppCompatActivity {
             return true;
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
@@ -190,5 +174,4 @@ public class Login extends AppCompatActivity {
         inputStream.close();
         return result;
     }
-
 }
