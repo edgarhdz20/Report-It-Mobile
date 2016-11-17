@@ -1,7 +1,10 @@
 package com.example.edgar.reportit;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -11,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,11 +48,14 @@ public class Principal extends AppCompatActivity {
     RadioButton rdbFuga;
     int CAMERA_INTENT = 0, MAP_INTENT = 1;
     double lat, lng;
+    SQLiteDatabase sqldb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+
+        sqldb = openOrCreateDatabase("report_it",MODE_PRIVATE,null);
 
         btnFoto = (Button)findViewById(R.id.btnFoto);
         btnSend = (Button)findViewById(R.id.btnSend);
@@ -124,15 +131,20 @@ public class Principal extends AppCompatActivity {
     }
 
     private class UploadTask extends AsyncTask<Bitmap, Void, Void> {
+        private String user_id;
         private String description;
         private String type;
         private String pos_x, pos_y;
         private String address;
         AlertDialog.Builder builder;
+        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog = new ProgressDialog(Principal.this);
+            dialog.setMessage("Enviando reporte...");
+            dialog.show();
             btnSend.setEnabled(false);
             btnSend.setText("Enviando...");
             description = edtDescription.getText().toString();
@@ -154,6 +166,9 @@ public class Principal extends AppCompatActivity {
             }else{
                 type= "3";
             }
+            Cursor c = sqldb.rawQuery("SELECT id FROM USER", null);
+            c.moveToFirst();
+            user_id = c.getString(0);
         }
 
         protected Void doInBackground(Bitmap... bitmaps) {
@@ -171,7 +186,7 @@ public class Principal extends AppCompatActivity {
                         "https://salty-earth-57909.herokuapp.com/reports/post_report"); // server
 
                 MultiPartEntity reqEntity = new MultiPartEntity();
-                reqEntity.addPart("user_id","1");
+                reqEntity.addPart("user_id",user_id);
                 reqEntity.addPart("report_type_id",type);
                 reqEntity.addPart("description", description);
                 reqEntity.addPart("pos_x",pos_x);
@@ -238,6 +253,7 @@ public class Principal extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             // TODO Auto-generated method stub
             super.onPostExecute(result);
+            dialog.dismiss();
             builder.create();
             builder.show();
             btnSend.setText("ENVIAR");
@@ -271,6 +287,18 @@ public class Principal extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //return super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //return super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.act_logout){
+            sqldb.delete("USER",null,null);
+            Intent intento = new Intent(Principal.this, Login.class);
+            startActivity(intento);
+            finish();
+        }
         return true;
     }
 }

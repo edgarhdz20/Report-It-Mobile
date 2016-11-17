@@ -61,7 +61,8 @@
         android:id="@+id/edtUsername"
         android:drawableLeft="@drawable/user_icon"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:background="@drawable/my_edit_text"/>
 
     <TextView
         android:text="Contraseña"
@@ -79,7 +80,8 @@
         android:inputType="textPassword"
         android:drawableLeft="@drawable/pass_icon"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:background="@drawable/my_edit_text"/>
 
     <Button
         android:text="Iniciar Sesion"

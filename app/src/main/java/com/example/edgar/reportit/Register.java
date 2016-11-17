@@ -1,7 +1,11 @@
 package com.example.edgar.reportit;
 
+import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -28,11 +33,14 @@ public class Register extends AppCompatActivity {
 
     EditText edtUsername, edtPassword, edtEmail;
     Button btnSign;
+    SQLiteDatabase sqldb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        sqldb = openOrCreateDatabase("report_it",MODE_PRIVATE,null);
+
         edtUsername = (EditText)findViewById(R.id.edtUserSign);
         edtPassword = (EditText)findViewById(R.id.edtPassSign);
         edtEmail = (EditText)findViewById(R.id.edtEmailSign);
@@ -112,11 +120,15 @@ public class Register extends AppCompatActivity {
 
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         String response;
+        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             btnSign.setEnabled(false);
+            dialog = new ProgressDialog(Register.this);
+            dialog.setMessage("Creando cuenta...");
+            dialog.show();
         }
 
         @Override
@@ -128,14 +140,30 @@ public class Register extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+            dialog.dismiss();
             btnSign.setEnabled(true);
             try {
                 JSONObject jsonObj = new JSONObject(response);
                 if(jsonObj.get("login").equals("OK")){
                     Intent intento = new Intent(Register.this, Principal.class);
-                    intento.putExtra("USER_ID",jsonObj.getString("user"));
-                    finish();
-                    startActivity(intento);
+                    sqldb.beginTransaction();
+                    ContentValues args = new ContentValues();
+                    args.put("id", jsonObj.getInt("user"));
+                    args.put("username", edtUsername.getText().toString());
+                    try{
+                        long row = sqldb.insert("USER",null,args);
+                        if(row != -1){
+                            sqldb.setTransactionSuccessful();
+                            finish();
+                            startActivity(intento);
+                        }else{
+                            Toast.makeText(Register.this, "Problema al guardar en la base de datos local", Toast.LENGTH_SHORT).show();
+                        }
+                    }catch(SQLiteException e){
+                        Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }finally{
+                        sqldb.endTransaction();
+                    }
                 }else{
                     AlertDialog.Builder builder;
                     builder = new AlertDialog.Builder(Register.this);

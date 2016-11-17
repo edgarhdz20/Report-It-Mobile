@@ -1,8 +1,12 @@
 package com.example.edgar.reportit;
 
+import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +42,21 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sqldb = openOrCreateDatabase("report_it",MODE_PRIVATE,null);
+
+        try{
+            sqldb.execSQL("create table USER (id integer,username text)");
+        }catch(SQLiteException e){
+            e.printStackTrace();
+        }
+        Cursor c = sqldb.rawQuery("SELECT * FROM USER",null);
+        if(c.moveToFirst()){
+            Intent intento = new Intent(Login.this, Principal.class);
+            startActivity(intento);
+            finish();
+        }
+
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -126,10 +145,14 @@ public class Login extends AppCompatActivity {
 
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         String response;
+        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog = new ProgressDialog(Login.this);
+            dialog.setMessage("Iniciando Sesion...");
+            dialog.show();
             btnLogin.setEnabled(false);
             btnSignup.setEnabled(false);
         }
@@ -143,15 +166,31 @@ public class Login extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+            dialog.dismiss();
             btnLogin.setEnabled(true);
             btnSignup.setEnabled(true);
             try {
                 JSONObject jsonObj = new JSONObject(response);
                 if(jsonObj.get("login").equals("OK")){
                     Intent intento = new Intent(Login.this, Principal.class);
-                    intento.putExtra("USER_ID",jsonObj.getString("user"));
-                    finish();
-                    startActivity(intento);
+                    sqldb.beginTransaction();
+                    ContentValues args = new ContentValues();
+                    args.put("id", jsonObj.getInt("user"));
+                    args.put("username", edtUser.getText().toString());
+                    try{
+                        long row = sqldb.insert("USER",null,args);
+                        if(row != -1){
+                            sqldb.setTransactionSuccessful();
+                            finish();
+                            startActivity(intento);
+                        }else{
+                            Toast.makeText(Login.this, "Problema al guardar en la base de datos local", Toast.LENGTH_SHORT).show();
+                        }
+                    }catch(SQLiteException e){
+                        Toast.makeText(Login.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }finally{
+                        sqldb.endTransaction();
+                    }
                 }else{
                     AlertDialog.Builder builder;
                     builder = new AlertDialog.Builder(Login.this);
