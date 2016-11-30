@@ -46,7 +46,7 @@ public class Login extends AppCompatActivity {
         sqldb = openOrCreateDatabase("report_it",MODE_PRIVATE,null);
 
         try{
-            sqldb.execSQL("create table USER (id integer,username text)");
+            sqldb.execSQL("create table USER (id integer,username text, email text)");
         }catch(SQLiteException e){
             e.printStackTrace();
         }
@@ -107,7 +107,6 @@ public class Login extends AppCompatActivity {
 
             // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
-            System.out.println("JSON: " + json);
 
             // ** Alternative way to convert Person object to JSON string usin Jackson Lib
             // ObjectMapper mapper = new ObjectMapper();
@@ -177,6 +176,7 @@ public class Login extends AppCompatActivity {
                     ContentValues args = new ContentValues();
                     args.put("id", jsonObj.getInt("user"));
                     args.put("username", edtUser.getText().toString());
+                    args.put("email", jsonObj.getString("email"));
                     try{
                         long row = sqldb.insert("USER",null,args);
                         if(row != -1){

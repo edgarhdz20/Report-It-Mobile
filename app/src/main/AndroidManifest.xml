@@ -31,8 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Principal"
-            android:label="Nuevo reporte"/>
+        <activity
+            android:name=".Principal"
+            android:label="Nuevo reporte" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -48,10 +49,11 @@
         <activity
             android:name=".LocationSelect"
             android:label="@string/title_activity_location_select" />
-
-        <activity android:name=".Register"
+        <activity
+            android:name=".Register"
             android:label="Registro"
-            android:parentActivityName=".Login"></activity>
+            android:parentActivityName=".Login" />
+        <activity android:name=".Report_List"></activity>
     </application>
 
 </manifest>

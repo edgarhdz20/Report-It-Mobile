@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,11 +18,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,23 +44,57 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Principal extends AppCompatActivity {
 
     Button btnFoto, btnSend, btnMap;
     ImageView imgvFoto;
     EditText edtDescription;
-    TextView txtvAddress;
+    TextView txtvAddress, userName;
     RadioButton rdbBache;
     RadioButton rdbFuga;
     int CAMERA_INTENT = 0, MAP_INTENT = 1;
     double lat, lng;
     SQLiteDatabase sqldb;
+    private String[] mPlanetTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    RelativeLayout mDrawerPane;
+    private ActionBarDrawerToggle mDrawerToggle;
+    ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_principal);
+
+        mNavItems.add(new NavItem("Reportes enviados", "Ver reportes enviados", R.drawable.reports_icon));
+        //mNavItems.add(new NavItem("Nuevo reporte", "Crear un reporte", R.drawable.new_report_icon));
+        mNavItems.add(new NavItem("Salir", "Cerrar sesion", R.drawable.logout_icon));
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
+        DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
+        mDrawerList.setAdapter(adapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println(position);
+                switch (position){
+                    case 0:
+                        Intent intento = new Intent(Principal.this, Report_List.class);
+                        startActivity(intento);
+                        finish();
+                        break;
+                    case 1:
+                        log_out();
+                        break;
+                }
+            }
+        });
 
         sqldb = openOrCreateDatabase("report_it",MODE_PRIVATE,null);
 
@@ -63,8 +104,13 @@ public class Principal extends AppCompatActivity {
         imgvFoto = (ImageView)findViewById(R.id.imgvFoto);
         edtDescription = (EditText)findViewById(R.id.edtDescription);
         txtvAddress = (TextView)findViewById(R.id.txtvAddress);
+        userName = (TextView)findViewById(R.id.userName);
         rdbFuga = (RadioButton)findViewById(R.id.rdbFugaAgua);
         rdbBache = (RadioButton)findViewById(R.id.rdbBache);
+
+        Cursor c = sqldb.rawQuery("SELECT username FROM USER",null);
+        c.moveToFirst();
+        userName.setText(c.getString(0));
 
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,11 +340,15 @@ public class Principal extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //return super.onOptionsItemSelected(item);
         if(item.getItemId() == R.id.act_logout){
-            sqldb.delete("USER",null,null);
-            Intent intento = new Intent(Principal.this, Login.class);
-            startActivity(intento);
-            finish();
+            log_out();
         }
         return true;
+    }
+
+    public void log_out(){
+        sqldb.delete("USER",null,null);
+        Intent intento = new Intent(Principal.this, Login.class);
+        startActivity(intento);
+        finish();
     }
 }

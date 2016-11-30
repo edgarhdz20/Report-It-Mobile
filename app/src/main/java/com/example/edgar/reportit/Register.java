@@ -150,6 +150,7 @@ public class Register extends AppCompatActivity {
                     ContentValues args = new ContentValues();
                     args.put("id", jsonObj.getInt("user"));
                     args.put("username", edtUsername.getText().toString());
+                    args.put("email", edtEmail.getText().toString());
                     try{
                         long row = sqldb.insert("USER",null,args);
                         if(row != -1){
