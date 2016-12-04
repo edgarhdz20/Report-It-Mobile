@@ -57,11 +57,8 @@ public class Principal extends AppCompatActivity {
     int CAMERA_INTENT = 0, MAP_INTENT = 1;
     double lat, lng;
     SQLiteDatabase sqldb;
-    private String[] mPlanetTitles;
-    private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     RelativeLayout mDrawerPane;
-    private ActionBarDrawerToggle mDrawerToggle;
     ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
 
     @Override
@@ -73,7 +70,6 @@ public class Principal extends AppCompatActivity {
         //mNavItems.add(new NavItem("Nuevo reporte", "Crear un reporte", R.drawable.new_report_icon));
         mNavItems.add(new NavItem("Salir", "Cerrar sesion", R.drawable.logout_icon));
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
@@ -87,7 +83,6 @@ public class Principal extends AppCompatActivity {
                     case 0:
                         Intent intento = new Intent(Principal.this, Report_List.class);
                         startActivity(intento);
-                        finish();
                         break;
                     case 1:
                         log_out();
@@ -190,6 +185,7 @@ public class Principal extends AppCompatActivity {
             super.onPreExecute();
             dialog = new ProgressDialog(Principal.this);
             dialog.setMessage("Enviando reporte...");
+            dialog.setCancelable(false);
             dialog.show();
             btnSend.setEnabled(false);
             btnSend.setText("Enviando...");
@@ -346,7 +342,9 @@ public class Principal extends AppCompatActivity {
     }
 
     public void log_out(){
+        System.out.println("delete all principal");
         sqldb.delete("USER",null,null);
+        sqldb.delete("REPORTS",null,null);
         Intent intento = new Intent(Principal.this, Login.class);
         startActivity(intento);
         finish();

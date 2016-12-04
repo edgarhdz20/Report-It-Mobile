@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +26,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,6 +34,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class Login extends AppCompatActivity {
 
@@ -46,10 +51,17 @@ public class Login extends AppCompatActivity {
         sqldb = openOrCreateDatabase("report_it",MODE_PRIVATE,null);
 
         try{
-            sqldb.execSQL("create table USER (id integer,username text, email text)");
+            sqldb.execSQL("create table USER (id integer, username text, email text)");
         }catch(SQLiteException e){
             e.printStackTrace();
         }
+
+        try{
+            sqldb.execSQL("create table REPORTS (id integer, user_id integer, report_type_id integer, description text, pos_x float, pos_y float, address text, url text, status integer)");
+        }catch(SQLiteException e){
+            e.printStackTrace();
+        }
+
         Cursor c = sqldb.rawQuery("SELECT * FROM USER",null);
         if(c.moveToFirst()){
             Intent intento = new Intent(Login.this, Principal.class);
@@ -151,6 +163,7 @@ public class Login extends AppCompatActivity {
             super.onPreExecute();
             dialog = new ProgressDialog(Login.this);
             dialog.setMessage("Iniciando Sesion...");
+            dialog.setCancelable(false);
             dialog.show();
             btnLogin.setEnabled(false);
             btnSignup.setEnabled(false);
@@ -181,8 +194,10 @@ public class Login extends AppCompatActivity {
                         long row = sqldb.insert("USER",null,args);
                         if(row != -1){
                             sqldb.setTransactionSuccessful();
-                            finish();
-                            startActivity(intento);
+                            String URL = "https://salty-earth-57909.herokuapp.com/reports/get_all_reports_user?user_id=" + jsonObj.getInt("user");
+                            new LoadJSONTask().execute(URL);
+                            //finish();
+                            //startActivity(intento);
                         }else{
                             Toast.makeText(Login.this, "Problema al guardar en la base de datos local", Toast.LENGTH_SHORT).show();
                         }
@@ -230,4 +245,87 @@ public class Login extends AppCompatActivity {
         return result;
     }
 
+    class LoadJSONTask extends AsyncTask<String, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        public LoadJSONTask() {
+            dialog = new ProgressDialog(Login.this);
+            dialog.setMessage("Cargando reportes enviados...");
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            boolean b = true;
+            try {
+                String stringResponse = loadJSON(strings[0]);
+                JSONArray json = new JSONArray(stringResponse);
+                JSONObject jo;
+
+                sqldb.beginTransaction();
+
+                for(int i = 0;i<json.length();i++){
+                    jo = (JSONObject) json.get(i);
+                    ContentValues cv = new ContentValues();
+                    cv.put("id",jo.getInt("id"));
+                    cv.put("user_id",jo.getInt("user_id"));
+                    cv.put("report_type_id",jo.getInt("report_type_id"));
+                    cv.put("description",jo.getString("description"));
+                    cv.put("pos_x",jo.getDouble("pos_x"));
+                    cv.put("pos_y",jo.getDouble("pos_y"));
+                    cv.put("address",jo.getString("address"));
+                    cv.put("url",jo.getJSONObject("avatar").getString("url"));
+                    //cv.put("status",jo.getBoolean("status"));
+                    sqldb.insert("REPORTS",null,cv);
+                }
+                sqldb.setTransactionSuccessful();
+            } catch (IOException e) {
+                e.printStackTrace();
+                b = false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                b = false;
+            }catch(SQLiteException e){
+                Toast.makeText(Login.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                b = false;
+            }finally{
+                sqldb.endTransaction();
+                return b;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean b) {
+            dialog.dismiss();
+            if(b){
+                Intent intento = new Intent(Login.this, Principal.class);
+                finish();
+                startActivity(intento);
+            }
+        }
+
+        private String loadJSON(String jsonURL) throws IOException {
+
+            java.net.URL url = new URL(jsonURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(35000);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+            conn.connect();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            StringBuilder response = new StringBuilder();
+
+            while ((line = in.readLine()) != null) {
+                response.append(line);
+            }
+
+            in.close();
+            return response.toString();
+        }
+    }
 }
