@@ -45,6 +45,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".LocationSelect"
             android:label="@string/title_activity_location_select" />
@@ -54,8 +55,11 @@
             android:parentActivityName=".Login" />
         <activity
             android:name=".Report_List"
-            android:parentActivityName=".Principal"
-            android:label="Reportes enviados"/>
+            android:label="Reportes enviados"
+            android:parentActivityName=".Principal" />
+        <activity android:name=".ReportDetails"
+            android:label="Detalles del reporte"
+            android:parentActivityName=".Report_List"></activity>
     </application>
 
 </manifest>

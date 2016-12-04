@@ -54,6 +54,9 @@ public class MyAdapter extends ArrayAdapter<JSONObject> {
             }
             txtvTitle.setText(arreglo.get(position).getInt("id") + " - " + arreglo.get(position).getString("description"));
             txtvSubtitle.setText(arreglo.get(position).getString("address"));
+
+
+            rowView.setTag(arreglo.get(position).getInt("id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -97,7 +97,9 @@ public class Report_List extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intento = new Intent(Report_List.this, ReportDetails.class);
+                intento.putExtra("ID", (int)view.getTag());
+                startActivity(intento);
             }
         });
 

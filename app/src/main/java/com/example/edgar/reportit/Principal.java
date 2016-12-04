@@ -1,10 +1,12 @@
 package com.example.edgar.reportit;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -255,14 +257,34 @@ public class Principal extends AppCompatActivity {
                         try {
                             InputStream instream = response.getEntity().getContent();
                             String result = convertStreamToString(instream);
+                            System.out.println("RESULTADO:" + result);
                             JSONObject myObject = new JSONObject(result);
                             builder.setMessage(myObject.getString("message"));
+                            sqldb.beginTransaction();
+                            JSONObject reporte = myObject.getJSONObject("report");
+                            ContentValues cv = new ContentValues();
+                            cv.put("id",reporte.getInt("id"));
+                            cv.put("user_id",reporte.getInt("user_id"));
+                            cv.put("report_type_id",reporte.getInt("report_type_id"));
+                            cv.put("description",reporte.getString("description"));
+                            cv.put("pos_x",reporte.getDouble("pos_x"));
+                            cv.put("pos_y",reporte.getDouble("pos_x"));
+                            cv.put("address",reporte.getString("address"));
+                            cv.put("url",reporte.getJSONObject("avatar").getString("url"));
+                            long ok = sqldb.insert("REPORTS",null,cv);
+                            if(ok != -1){
+                                sqldb.setTransactionSuccessful();
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        }catch(SQLiteException e){
+                            Toast.makeText(Principal.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        } finally{
+                            sqldb.endTransaction();
                         }
-                    Log.i("TAG", "response " + response.getStatusLine().toString());
+                        Log.i("TAG", "response " + response.getStatusLine().toString());
                 } finally {
 
                 }
