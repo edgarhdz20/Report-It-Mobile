@@ -58,7 +58,8 @@ public class ReportDetails extends AppCompatActivity implements OnMapReadyCallba
         txtvDescription.setText(c.getString(c.getColumnIndex("description")));
         txtvAddress.setText(c.getString(c.getColumnIndex("address")));
 
-        new DownloadImageTask(img).execute(c.getString(c.getColumnIndex("url")));
+        String url = "https://salty-earth-57909.herokuapp.com/reports/get_report_photo?id=" + c.getInt(c.getColumnIndex("id"));
+        new DownloadImageTask(img).execute(url);
 
         lat = c.getDouble(c.getColumnIndex("pos_x"));
         lng = c.getDouble(c.getColumnIndex("pos_y"));

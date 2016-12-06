@@ -82,8 +82,6 @@ public class Report_List extends AppCompatActivity {
                 System.out.println(position);
                 switch (position){
                     case 0:
-                        Intent intento = new Intent(Report_List.this, Principal.class);
-                        startActivity(intento);
                         finish();
                         break;
                     case 1:

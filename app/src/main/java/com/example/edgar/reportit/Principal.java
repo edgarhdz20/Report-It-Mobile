@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,7 @@ public class Principal extends AppCompatActivity {
     private ListView mDrawerList;
     RelativeLayout mDrawerPane;
     ArrayList<NavItem> mNavItems = new ArrayList<NavItem>();
+    DrawerLayout drawer_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +74,12 @@ public class Principal extends AppCompatActivity {
         //mNavItems.add(new NavItem("Nuevo reporte", "Crear un reporte", R.drawable.new_report_icon));
         mNavItems.add(new NavItem("Salir", "Cerrar sesion", R.drawable.logout_icon));
 
+        drawer_layout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerPane = (RelativeLayout) findViewById(R.id.drawerPane);
         DrawerListAdapter adapter = new DrawerListAdapter(this, mNavItems);
         mDrawerList.setAdapter(adapter);
+
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,6 +89,7 @@ public class Principal extends AppCompatActivity {
                     case 0:
                         Intent intento = new Intent(Principal.this, Report_List.class);
                         startActivity(intento);
+                        drawer_layout.closeDrawer(Gravity.LEFT);
                         break;
                     case 1:
                         log_out();
@@ -268,7 +273,7 @@ public class Principal extends AppCompatActivity {
                             cv.put("report_type_id",reporte.getInt("report_type_id"));
                             cv.put("description",reporte.getString("description"));
                             cv.put("pos_x",reporte.getDouble("pos_x"));
-                            cv.put("pos_y",reporte.getDouble("pos_x"));
+                            cv.put("pos_y",reporte.getDouble("pos_y"));
                             cv.put("address",reporte.getString("address"));
                             cv.put("url",reporte.getJSONObject("avatar").getString("url"));
                             long ok = sqldb.insert("REPORTS",null,cv);
@@ -371,4 +376,5 @@ public class Principal extends AppCompatActivity {
         startActivity(intento);
         finish();
     }
+
 }
